@@ -53,16 +53,14 @@ public:
 	}
 	double distance()
 	{
-		double distance = sqrt(x * x + y * y);
-		return distance;
+		return sqrt(x * x + y * y);
 	}
 };
 
 
 double distance(double x1, double y1, double x2, double y2)
 {
-	double distance = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-	return distance;
+	 return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 //#define STRUCT_POINT
 void main()
