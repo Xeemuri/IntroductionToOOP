@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 using namespace std;
 
-class Point1
+class Point
 {
 	double x;
 	double y;
@@ -23,61 +23,42 @@ public:
 		this->y = y;
 		//this - указатель на объект для которого вызывается метод
 	}
-	double distance()
+	double distance(Point other)
 	{
-		double distance = sqrt(x * x + y * y); //По теореме Пифагора
+		double x_distance = this->x - other.x;
+		double y_distance = this->y - other.y;
+		double distance = sqrt(x_distance * x_distance + y_distance * y_distance); //По теореме Пифагора
 		return distance;
 	}
 };
 
-class Point2
-{
-	double x;
-	double y;
-public:
-	double get_x()const
-	{
-		return x;
-	}
-	double get_y()const
-	{
-		return y;
-	}
-	void set_x(double x)
-	{
-		this->x = x;
-	}
-	void set_y(double y)
-	{
-		this->y = y;
-	}
-	double distance()
-	{
-		return sqrt(x * x + y * y);
-	}
-};
 
-
-double distance(double x1, double y1, double x2, double y2)
+double distance(Point A, Point B)
 {
-	 return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+	double x_distance = A.get_x() - B.get_x();
+	double y_distance = A.get_y() - B.get_y();
+	double distance = sqrt(x_distance * x_distance + y_distance * y_distance);
+	return distance;
 }
 //#define STRUCT_POINT
 void main()
 {
 	setlocale(LC_ALL, "");
-	Point1 A;
-	Point2 B;
-	A.set_x(4);
+	Point A;
+	A.set_x(2);
 	A.set_y(3);
-	B.set_x(3);
-	B.set_y(4);
 	cout <<"Point A: "<< A.get_x() << "\t" << A.get_y() << endl;
-	cout << "Point B: " << B.get_x() << "\t" << B.get_y() << endl;
-	cout << "Distance to point A: " << A.distance()<<endl;
-	cout << "Distance to point B: " << B.distance()<<endl;
 
-	cout << "Distance between point A and point B: " << distance(A.get_x(), A.get_y(), B.get_x(), B.get_y());
+	Point B;
+	B.set_x(7);
+	B.set_y(8);
+	cout << "Point B: " << B.get_x() << "\t" << B.get_y() << endl;
+
+	cout << "Расстояние от точки A до точки B: " << A.distance(B) <<endl;
+	cout << "Расстояние от точки B до точки A: " << B.distance(A) <<endl;
+	cout << "Расстояние между точками А и B: " << distance(A, B)<<endl;
+	cout << "Расстояние между точками B и A: " << distance(B,A)<<endl;
+
 #ifdef STRUCT_POINT
 	cout << "Hello OOP!" << endl;
 	Point A;	//Объявление переменной А типа Point
