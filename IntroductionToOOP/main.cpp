@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 using namespace std;
+#define tab "\t"
+#define delimeter "\n--------------------------------------\n"
 
 class Point
 {
@@ -23,17 +25,61 @@ public:
 		this->y = y;
 		//this - указатель на объект для которого вызывается метод
 	}
-	double distance(Point other)
+
+	//		Constructors
+	//Point()
+	//{
+	//	x = y = 0; //Записываем в переменные члены класса значения по умолчанию
+	//	cout << "Default Constructor:\t" << this << endl;
+	//}
+	//Point(double x)
+	//{
+	//	this->x = x;
+	//	this->y = 0;
+	//	cout << "SingleArgConstructor:\t" << this << endl;
+	//}
+	Point(double x=0, double y=0)
 	{
+		this->x = x;
+		this->y = y;
+		cout << "Constructor:\t" << this << endl;
+	}
+	Point(const Point& other)
+	{
+		this->x = other.x;
+		this->y = other.y;
+		cout << "CopyConstructor:\t" << this << endl;
+	}
+	~Point()
+	{
+		cout << "Destructor:\t" << this << endl;
+	}
+	//				Operators:
+	void operator=(const Point& other)
+	{
+		this->x = other.x;
+		this->y = other.y;
+		cout << "CopyAssignment:\t\t" << this << endl;
+	}
+	//				Methods:
+	double distance(const Point& other)const
+	{
+		/*other.x *= 100;
+		other.y *= 100;
+		this->x *= 100;
+		this->y *= 100;*/
 		double x_distance = this->x - other.x;
 		double y_distance = this->y - other.y;
 		double distance = sqrt(x_distance * x_distance + y_distance * y_distance); //По теореме Пифагора
 		return distance;
 	}
+	void print() const
+	{
+		cout << "X = " << x << ", \tY = " << y << endl;
+	}
 };
 
-
-double distance(Point A, Point B)
+double distance(const Point& A, const Point& B)
 {
 	double x_distance = A.get_x() - B.get_x();
 	double y_distance = A.get_y() - B.get_y();
@@ -41,24 +87,43 @@ double distance(Point A, Point B)
 	return distance;
 }
 //#define STRUCT_POINT
-void main()
+//#define DISTANCE_CHECK
+//#define FOR_COUNTER_LIFETIME
+//#define CONSTRUCTORS_CHECK
+//#define ASSIGNMENT_CHECK
+int main()
 {
-	setlocale(LC_ALL, "");
+	setlocale(LC_ALL, "");   
+
+#ifdef DISTANCE_CHECK
 	Point A;
 	A.set_x(2);
 	A.set_y(3);
-	cout <<"Point A: "<< A.get_x() << "\t" << A.get_y() << endl;
+	cout << A.get_x() << "\t" << A.get_y() << endl;
 
 	Point B;
 	B.set_x(7);
 	B.set_y(8);
-	cout << "Point B: " << B.get_x() << "\t" << B.get_y() << endl;
-
-	cout << "Расстояние от точки A до точки B: " << A.distance(B) <<endl;
-	cout << "Расстояние от точки B до точки A: " << B.distance(A) <<endl;
-	cout << "Расстояние между точками А и B: " << distance(A, B)<<endl;
-	cout << "Расстояние между точками B и A: " << distance(B,A)<<endl;
-
+	cout << B.get_x() << "\t" << B.get_y() << endl;
+	cout << delimeter << endl;
+	cout << "Расстояние от точки A до точки B: " << A.distance(B) << endl;
+	cout << delimeter << endl;
+	cout << "Расстояние от точки B до точки A: " << B.distance(A) << endl;
+	cout << delimeter << endl;
+	cout << "Расстояние между точками А и B: " << distance(A, B) << endl;
+	cout << delimeter << endl;
+	cout << "Расстояние между точками B и A: " << distance(B, A) << endl;
+	cout << delimeter << endl;
+#endif // DISTANCE_CHECK
+#ifdef FOR_COUNTER_LIFETIME
+	for (int i = 0; i < 10; i++)
+	{
+		cout << i << "\t";
+	}
+	//Если бы переменная 'i' была объектом, то по завершении всех итераций для нее был бы вызван деструктор
+	//по скольку время жизни переменной 'i' завершается по оканчании всех итераций цикла 'for'.
+	cout << endl;
+#endif // FOR_COUNTER_LIFETIME
 #ifdef STRUCT_POINT
 	cout << "Hello OOP!" << endl;
 	Point A;	//Объявление переменной А типа Point
@@ -71,4 +136,33 @@ void main()
 	cout << pA->x << "\t" << pA->y << endl;
 #endif // STRUCT_POINT
 
+#ifdef CONSTRUCTORS_CHECK
+	Point A;		//Default constructor
+	A.print();
+
+	Point B(12);	// Single-argument constructor (Конструктор с одним ппараметром)
+	B.print();
+
+	Point C(2, 3);	//Конструктор с параметрами
+	C.print();
+
+	Point D = C;	//Конструктор копирования
+	D.print();
+
+	Point E;
+	E = D;			//CopyAssignment
+	E.print();
+#endif // CONSTRUCTORS_CHECK
+#ifdef ASSIGNMENT_CHECK
+	int a, b, c;
+	a = b = c = 0;
+	cout << a << tab << b << tab << c << endl;
+
+	Point A, B, C;
+	A = B = C = Point(2, 3);
+	A.print();
+	B.print();
+	C.print();
+#endif // ASSIGNMENT_CHECK
+	return 0;
 }
