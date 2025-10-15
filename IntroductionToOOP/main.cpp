@@ -55,12 +55,14 @@ public:
 		cout << "Destructor:\t" << this << endl;
 	}
 	//				Operators:
-	void operator=(const Point& other)
+	Point operator=(const Point& other)
 	{
 		this->x = other.x;
 		this->y = other.y;
 		cout << "CopyAssignment:\t\t" << this << endl;
+		return other;
 	}
+
 	//				Methods:
 	double distance(const Point& other)const
 	{
@@ -90,7 +92,7 @@ double distance(const Point& A, const Point& B)
 //#define DISTANCE_CHECK
 //#define FOR_COUNTER_LIFETIME
 //#define CONSTRUCTORS_CHECK
-//#define ASSIGNMENT_CHECK
+#define ASSIGNMENT_CHECK
 int main()
 {
 	setlocale(LC_ALL, "");   
