@@ -55,21 +55,17 @@ public:
 		cout << "Destructor:\t" << this << endl;
 	}
 	//				Operators:
-	Point operator=(const Point& other)
+	Point& operator=(const Point& other)
 	{
 		this->x = other.x;
 		this->y = other.y;
 		cout << "CopyAssignment:\t\t" << this << endl;
-		return other;
+		return *this;
 	}
 
 	//				Methods:
 	double distance(const Point& other)const
 	{
-		/*other.x *= 100;
-		other.y *= 100;
-		this->x *= 100;
-		this->y *= 100;*/
 		double x_distance = this->x - other.x;
 		double y_distance = this->y - other.y;
 		double distance = sqrt(x_distance * x_distance + y_distance * y_distance); //По теореме Пифагора
@@ -88,11 +84,22 @@ double distance(const Point& A, const Point& B)
 	double distance = sqrt(x_distance * x_distance + y_distance * y_distance);
 	return distance;
 }
+
+Point operator+(Point& left, Point& right)
+{
+	Point result;
+	result.set_x(left.get_x() + right.get_x());
+	result.set_y(left.get_y() + right.get_y());
+	return result;
+}
+
+
 //#define STRUCT_POINT
 //#define DISTANCE_CHECK
 //#define FOR_COUNTER_LIFETIME
 //#define CONSTRUCTORS_CHECK
-#define ASSIGNMENT_CHECK
+//#define ASSIGNMENT_CHECK
+#define OPERATORS_CHECK
 int main()
 {
 	setlocale(LC_ALL, "");   
@@ -161,10 +168,22 @@ int main()
 	cout << a << tab << b << tab << c << endl;
 
 	Point A, B, C;
+	cout << delimeter << endl;
 	A = B = C = Point(2, 3);
+	//Point(2,3); - этот конструктор создает временный безымянный объект
+	//который существует только в пределах одного выражения
+	//и удаляется из памяти по завершении выражения
+	cout << delimeter;
 	A.print();
 	B.print();
 	C.print();
 #endif // ASSIGNMENT_CHECK
+#ifdef OPERATORS_CHECK
+	Point A(2, 3);
+	Point B(7, 8);
+	Point C = A+B;
+	C.print();
+#endif // OPERATORS_CHECK
+
 	return 0;
 }
