@@ -46,7 +46,7 @@ public:
 		this->denominator = denominator;
 		this->check_negative();
 	}
-
+	
 	Fraction& operator=(const Fraction& other)
 	{
 		this->int_part = other.int_part;
@@ -108,7 +108,6 @@ Fraction operator+(const Fraction& left, const Fraction& right);
 Fraction operator-(const Fraction& left, const Fraction& right);
 Fraction operator*(const Fraction& left, const Fraction& right);
 Fraction operator/(const Fraction& left, const Fraction& right);
-
 int main()
 {
 	setlocale(LC_ALL, "");
