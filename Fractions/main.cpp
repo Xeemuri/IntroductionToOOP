@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 using namespace std;
 
 int GCD(int a, int b);
@@ -6,9 +6,9 @@ int LCM(int a, int b);
 
 class Fraction
 {
-	int int_part;		//целая часть
-	int numerator;		//числитель дроби
-	int denominator;	//знаменатель дроби
+	int int_part;		//С†РµР»Р°СЏ С‡Р°СЃС‚СЊ
+	int numerator;		//С‡РёСЃР»РёС‚РµР»СЊ РґСЂРѕР±Рё
+	int denominator;	//Р·РЅР°РјРµРЅР°С‚РµР»СЊ РґСЂРѕР±Рё
 public:
 	int get_int_part()
 	{
@@ -39,7 +39,7 @@ public:
 	{
 		while (denominator == 0)
 		{
-			cout << "Знаменатель дроби должен быть больше нуля, введите его : "; cin >> denominator;
+			cout << "Р—РЅР°РјРµРЅР°С‚РµР»СЊ РґСЂРѕР±Рё РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ РЅСѓР»СЏ, РІРІРµРґРёС‚Рµ РµРіРѕ : "; cin >> denominator;
 		}
 		this->int_part = int_part;
 		this->numerator = numerator;
@@ -73,7 +73,7 @@ public:
 	}
 	void check_negative()
 	{
-		if (denominator < 0 && numerator > 0)						//Например 1/-2 или 1 1/-2
+		if (denominator < 0 && numerator > 0)						//РќР°РїСЂРёРјРµСЂ 1/-2 РёР»Рё 1 1/-2
 		{
 			if (int_part != 0)										// 1 1/-2
 			{
@@ -91,7 +91,7 @@ public:
 			int_part = -int_part;
 			numerator = -numerator;
 		}
-		else if (numerator < 0 && denominator < 0)					// 1 -1/-2 или -1/-2
+		else if (numerator < 0 && denominator < 0)					// 1 -1/-2 РёР»Рё -1/-2
 		{
 			numerator = -numerator;
 			denominator = -denominator;
@@ -112,9 +112,9 @@ int main()
 {
 	setlocale(LC_ALL, "");
 	Fraction a(-1, -10);
-	cout << "Дробь a = ";a.print();
+	cout << "Р”СЂРѕР±СЊ a = ";a.print();
 	Fraction b(3, -10);
-	cout << "Дробь b = "; b.print();
+	cout << "Р”СЂРѕР±СЊ b = "; b.print();
 	Fraction c;
 	c = a + b;
 	cout << "a + b = "; c.simplify(); c.print();
@@ -127,7 +127,7 @@ int main()
 }
 
 
-int GCD(int a, int b)	//Greatest Common Divisor (Наибольший общий делитель)
+int GCD(int a, int b)	//Greatest Common Divisor (РќР°РёР±РѕР»СЊС€РёР№ РѕР±С‰РёР№ РґРµР»РёС‚РµР»СЊ)
 {
 	int greater, lesser;
 	if (a == b) return a;
@@ -151,7 +151,7 @@ int GCD(int a, int b)	//Greatest Common Divisor (Наибольший общий делитель)
 	} while (remainder != 0);
 }
 
-int LCM(int a, int b)//Least Common Multiple (Наименьшее Общее Кратное)
+int LCM(int a, int b)//Least Common Multiple (РќР°РёРјРµРЅСЊС€РµРµ РћР±С‰РµРµ РљСЂР°С‚РЅРѕРµ)
 {
 	return a * b / GCD(a, b);
 }
@@ -228,7 +228,7 @@ Fraction operator/(const Fraction& left, const Fraction& right)
 	Fraction right_copy = right;
 	Fraction result;
 
-	//Переворачиваем дробь
+	//РџРµСЂРµРІРѕСЂР°С‡РёРІР°РµРј РґСЂРѕР±СЊ
 	int buffer = right_copy.get_numerator();
 	right_copy.set_numerator(right_copy.get_denominator());
 	right_copy.set_denominator(buffer);
