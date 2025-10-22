@@ -10,15 +10,15 @@ class Fraction
 	int numerator;		//числитель дроби
 	int denominator;	//знаменатель дроби
 public:
-	int get_int_part()
+	int get_int_part() const
 	{
 		return int_part;
 	}
-	int get_numerator()
+	int get_numerator() const
 	{
 		return numerator;
 	}
-	int get_denominator()
+	int get_denominator() const 
 	{
 		return denominator;
 	}
@@ -35,7 +35,7 @@ public:
 		denominator = number;
 	}
 
-	Fraction(int numerator = 1, int denominator = 1, int int_part = 0)
+	Fraction(int numerator = 0, int denominator = 1, int int_part = 0)
 	{
 		while (denominator == 0)
 		{
@@ -58,17 +58,21 @@ public:
 
 	void print() {
 		if (int_part != 0) cout << int_part << " ";
-		if(numerator!=0) cout << numerator << "/" << denominator << endl;
+		if (numerator != 0) cout << numerator << "/" << denominator << endl;
+		if (numerator == 0 && int_part == 0) cout << 0 << endl;
 	}
 	void simplify()
 	{
-		int gcd = GCD(numerator, denominator);
-		numerator /= gcd;
-		denominator /= gcd;
-		if (numerator > denominator)
+		if (numerator != 0)
 		{
-			int_part += numerator / denominator;
-			numerator = numerator % denominator;
+			int gcd = GCD(numerator, denominator);
+			numerator /= gcd;
+			denominator /= gcd;
+			if (numerator > denominator)
+			{
+				int_part += numerator / denominator;
+				numerator = numerator % denominator;
+			}
 		}
 	}
 	void check_negative()
@@ -100,24 +104,34 @@ public:
 	void to_improper()
 	{
 		numerator = int_part * denominator + numerator;
+		int_part = 0;
 	}
 
 };
 
-Fraction operator+(const Fraction& left, const Fraction& right);
-Fraction operator-(const Fraction& left, const Fraction& right);
-Fraction operator*(const Fraction& left, const Fraction& right);
-Fraction operator/(const Fraction& left, const Fraction& right);
+Fraction operator+(Fraction left, Fraction right);
+Fraction operator+=(Fraction& left, const Fraction& right);
+
+Fraction operator-(Fraction left, Fraction right);
+Fraction operator-=(Fraction& left, const Fraction& right);
+
+Fraction operator*(Fraction left, Fraction right);
+Fraction operator*=(Fraction& left, const Fraction& right);
+
+Fraction operator/(Fraction left, Fraction right);
+Fraction operator/=(Fraction& left, const Fraction& right);
+
 int main()
 {
 	setlocale(LC_ALL, "");
-	Fraction a(-1, -10);
+	Fraction a(1, 2);
 	cout << "Дробь a = ";a.print();
-	Fraction b(3, -10);
+	Fraction b(1, 2);
 	cout << "Дробь b = "; b.print();
-	Fraction c;
-	c = a + b;
+	Fraction c(1,2);
 	cout << "a + b = "; c.simplify(); c.print();
+	c += b;
+	cout << "c+=b = "; c.simplify(); c.print();
 	c = a - b;
 	cout << "a - b = "; c.simplify(); c.print();
 	c = a * b;
@@ -156,85 +170,98 @@ int LCM(int a, int b)//Least Common Multiple (Наименьшее Общее К
 	return a * b / GCD(a, b);
 }
 
-Fraction operator+(const Fraction& left, const Fraction& right)
+Fraction operator+(Fraction left, Fraction right)
 {
-	Fraction left_copy = left;
-	Fraction right_copy = right;
 
-	left_copy.to_improper();
-	right_copy.to_improper();
+	left.to_improper();
+	right.to_improper();
 
-	if (left_copy.get_denominator() != right_copy.get_denominator())
+	if (left.get_denominator() != right.get_denominator())
 	{
-		int lcm = LCM(left_copy.get_denominator(), right_copy.get_denominator());
-		int left_multiplier = lcm / left_copy.get_denominator();
-		int right_multiplier = lcm / right_copy.get_denominator();
+		int lcm = LCM(left.get_denominator(), right.get_denominator());
+		int left_multiplier = lcm / left.get_denominator();
+		int right_multiplier = lcm / right.get_denominator();
 
-		left_copy.set_numerator(left_copy.get_numerator() * left_multiplier);
-		right_copy.set_numerator(right_copy.get_numerator() * right_multiplier);
+		left.set_numerator(left.get_numerator() * left_multiplier);
+		right.set_numerator(right.get_numerator() * right_multiplier);
 
-		left_copy.set_denominator(left_copy.get_denominator() * left_multiplier);
-		right_copy.set_denominator(right_copy.get_denominator() * right_multiplier);
+		left.set_denominator(left.get_denominator() * left_multiplier);
+		right.set_denominator(right.get_denominator() * right_multiplier);
 	}
 
 	Fraction result;
-	result.set_numerator(left_copy.get_numerator() + right_copy.get_numerator());
-	result.set_denominator(left_copy.get_denominator());
+	result.set_numerator(left.get_numerator() + right.get_numerator());
+	result.set_denominator(left.get_denominator());
 	result.check_negative();
 	return result;
 }
-
-Fraction operator-(const Fraction& left, const Fraction& right)
+Fraction operator+=(Fraction& left, const Fraction& right)
 {
-	Fraction left_copy = left;
-	Fraction right_copy = right;
+	return left = left + right;
+}
 
-	left_copy.to_improper();
-	right_copy.to_improper();
+Fraction operator-(Fraction left, Fraction right)
+{
+	left.to_improper();
+	right.to_improper();
 
-	if (left_copy.get_denominator() != right_copy.get_denominator())
+	if (left.get_denominator() != right.get_denominator())
 	{
-		int lcm = LCM(left_copy.get_denominator(), right_copy.get_denominator());
-		int left_multiplier = lcm / left_copy.get_denominator();
-		int right_multiplier = lcm / right_copy.get_denominator();
+		int lcm = LCM(left.get_denominator(), right.get_denominator());
+		int left_multiplier = lcm / left.get_denominator();
+		int right_multiplier = lcm / right.get_denominator();
 
-		left_copy.set_numerator(left_copy.get_numerator() * left_multiplier);
-		right_copy.set_numerator(right_copy.get_numerator() * right_multiplier);
+		left.set_numerator(left.get_numerator() * left_multiplier);
+		right.set_numerator(right.get_numerator() * right_multiplier);
 
-		left_copy.set_denominator(left_copy.get_denominator() * left_multiplier);
-		right_copy.set_denominator(right_copy.get_denominator() * right_multiplier);
+		left.set_denominator(left.get_denominator() * left_multiplier);
+		right.set_denominator(right.get_denominator() * right_multiplier);
 	}
 
 	Fraction result;
-	result.set_numerator(left_copy.get_numerator() - right_copy.get_numerator());
-	result.set_denominator(left_copy.get_denominator());
+	result.set_numerator(left.get_numerator() - right.get_numerator());
+	result.set_denominator(left.get_denominator());
 	result.check_negative();
 	return result;
 }
+Fraction operator-=(Fraction& left, const Fraction& right)
+{
+	return left = left - right;
+}
+Fraction operator*(Fraction left,Fraction right)
+{
+	Fraction result;
 
-Fraction operator*(const Fraction& left,const Fraction& right)
-{
-	Fraction left_copy = left;
-	Fraction right_copy = right;
-	Fraction result;
-	result.set_numerator(left_copy.get_numerator() * right_copy.get_numerator());
-	result.set_denominator(left_copy.get_denominator() * right_copy.get_denominator());
+	left.to_improper();
+	right.to_improper();
+
+	result.set_numerator(left.get_numerator() * right.get_numerator());
+	result.set_denominator(left.get_denominator() * right.get_denominator());
 	result.check_negative();
 	return result;
 }
-Fraction operator/(const Fraction& left, const Fraction& right)
+Fraction operator*=(Fraction& left, const Fraction& right)
 {
-	Fraction left_copy = left;
-	Fraction right_copy = right;
+	return left = left * right;
+}
+Fraction operator/(Fraction left, Fraction right)
+{
 	Fraction result;
+
+	left.to_improper();
+	right.to_improper();
 
 	//Переворачиваем дробь
-	int buffer = right_copy.get_numerator();
-	right_copy.set_numerator(right_copy.get_denominator());
-	right_copy.set_denominator(buffer);
+	int buffer = right.get_numerator();
+	right.set_numerator(right.get_denominator());
+	right.set_denominator(buffer);
 
-	result.set_numerator(left_copy.get_numerator() * right_copy.get_numerator());
-	result.set_denominator(left_copy.get_denominator() * right_copy.get_denominator());
+	result.set_numerator(left.get_numerator() * right.get_numerator());
+	result.set_denominator(left.get_denominator() * right.get_denominator());
 	result.check_negative();
 	return result;
+}
+Fraction operator/=(Fraction& left, const Fraction& right)
+{
+	return left = left / right;
 }
