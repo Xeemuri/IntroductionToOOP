@@ -13,7 +13,7 @@ using namespace std;
 // STREAMS_CHECK_2
 //#define TYPE_CONVERSIONS_BASICS
 //#define CONVERSIONS_FROM_OTHER_TO_CLASS
-#define HOME_WORK
+//#define HOME_WORK
 class Fraction;
 Fraction operator+ (Fraction left, Fraction right);
 Fraction operator- (Fraction left, Fraction right);
@@ -66,10 +66,22 @@ public:
 		denominator = 1;
 		cout << "SingleArgConstrucor: \t" << this << endl;
 	}
-	explicit Fraction(double number)
+	explicit Fraction(double decimal)
 	{
-		integer = int(number);
+		//0) Корректируем десятичную дробь
+		decimal += 1e-10;
+		//1) Сохраняем целую часть:
+		integer = decimal;
+		//2) Убираем целую часть ищ=з десятичной дроби:
+		decimal -= integer;
+		//3) Берем целую часть из десятичной дроби: 
+		denominator = 1e+9;	//1*10^9;
+		//4)
+		numerator = decimal * denominator;
+		reduce();
 
+		/*integer = int(number);
+		
 		double float_part = number - integer;
 		while (float_part != int(float_part)) float_part *= 10;
 		numerator = int(float_part);
@@ -82,7 +94,7 @@ public:
 			count++;
 		}
 		denominator = pow(10., double(count));
-		cout << "SingleArgConstrucor: \t" << this << endl;
+		cout << "SingleArgConstrucor: \t" << this << endl;*/
 	}
 	
 	Fraction(int numerator, int denominator)
@@ -162,6 +174,18 @@ public:
 		this->integer--;
 		return old;
 	}
+	//		Type-cast operators:
+	explicit operator int() const
+	{
+		return integer + numerator/denominator;
+	}
+
+	explicit operator double() const
+	{
+		double decimal = integer + double(numerator) / denominator;
+		return decimal;
+	}
+
 	//		Методы класса:
 	Fraction& reduce()
 	{
@@ -467,9 +491,17 @@ cout << B++ << endl;*/
 	cout << B << endl;
 #endif // CONVERSIONS_FROM_OTHER_TO_CLASS
 #ifdef HOME_WORK
-	Fraction A = Fraction(2.75);
+	Fraction A = Fraction(3.76);
 	cout << A << endl;
+	double b{ 3 };
+	cout << b << endl;
+	Fraction B{ 8 };
+	cout << B << endl;
 #endif // HOME_WORK
-
-
+	Fraction A(2,3,4);
+	cout << A << endl;
+	int a = (int)A;
+	cout << a << endl;
+	double b = (double)A;
+	cout << b << endl;
 }
