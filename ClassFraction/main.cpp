@@ -1,5 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 #define tab "\t"
@@ -11,6 +12,8 @@ using namespace std;
 // STREAMS_CHECK_1
 // STREAMS_CHECK_2
 //#define TYPE_CONVERSIONS_BASICS
+//#define CONVERSIONS_FROM_OTHER_TO_CLASS
+#define HOME_WORK
 class Fraction;
 Fraction operator+ (Fraction left, Fraction right);
 Fraction operator- (Fraction left, Fraction right);
@@ -56,11 +59,29 @@ public:
 		denominator = 1;
 		cout << "DefaultConstructor:\t" << this << endl;
 	}
-	 explicit Fraction(int integer)
+	explicit Fraction(int integer)
 	{
 		this->integer = integer;
 		numerator = 0;
 		denominator = 1;
+		cout << "SingleArgConstrucor: \t" << this << endl;
+	}
+	explicit Fraction(double number)
+	{
+		integer = int(number);
+
+		double float_part = number - integer;
+		while (float_part != int(float_part)) float_part *= 10;
+		numerator = int(float_part);
+
+		int n = numerator;
+		int count = 0;
+		while (n != 0)
+		{
+			n /= 10;
+			count++;
+		}
+		denominator = pow(10., double(count));
 		cout << "SingleArgConstrucor: \t" << this << endl;
 	}
 	
@@ -423,10 +444,13 @@ cout << B++ << endl;*/
 	cout << "Введите простую дробь: "; cin >> A;
 	cout << A << endl;
 #endif // STREAMS_CHECK_1
+
+#ifdef STREAMS_CHECK_2
 	Fraction A, B, C;
 	cout << "Введите 3 простых дроби: ";
 	cin >> A >> B >> C;
-	cout << A << tab << B << tab <<  C << endl;
+	cout << A << tab << B << tab << C << endl;
+#endif // STREAMS_CHECK_2
 
 #ifdef TYPE_CONVERSION_BASICS
 	int a = 2;
@@ -434,11 +458,18 @@ cout << B++ << endl;*/
 	int c = b;
 	int d = 3.14;
 #endif // TYPE_CONVERSION_BASICS
-	/*Fraction A = (Fraction)5;
-	cout << A << endl;
 
+#ifdef CONVERSIONS_FROM_OTHER_TO_CLASS
+	Fraction A = (Fraction)5;
+	cout << A << endl;
 	Fraction B;
 	B = Fraction(8);
-	cout << B << endl;*/
+	cout << B << endl;
+#endif // CONVERSIONS_FROM_OTHER_TO_CLASS
+#ifdef HOME_WORK
+	Fraction A = Fraction(2.75);
+	cout << A << endl;
+#endif // HOME_WORK
+
 
 }
