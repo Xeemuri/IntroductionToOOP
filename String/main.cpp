@@ -11,6 +11,7 @@ char* ToUpper(char str[]);
 char* ToLower(char str[]);
 void shrink(char str[]); 
 bool is_palindrome(const char* str);
+char* RemoveSymbol(char str[], char symbol = ' ');
 bool is_int_number(char* str);
 int to_int_number(char* str);
 bool is_bin_number(char* str);
@@ -32,7 +33,7 @@ int main()
 #endif // LINES_BASICS_1
 
 	const int SIZE = 50;
-	char str[SIZE] = {"1.1.1.1"};
+	char str[SIZE] = {"Аргентина манит негра"};
 	//cout << "Введите строку: ";
 	SetConsoleCP(1251);
 	//cin.getline(str,SIZE);
@@ -108,13 +109,27 @@ bool is_palindrome(const char* str)
 	char* buffer = new char[size + 1] {};
 	strcpy(buffer, str);
 	//strcpy(dst,src) //Эта функция копирует содержимое строки 'src' (Source) в строку 'dst' (Destination)
-	for (int i = 0; i < size; i++)
+	ToLower(buffer);
+	RemoveSymbol(buffer);
+	size = strlen(buffer);
+	for (int i = 0; i < size/2; i++)
 	{
-		if (str[i] != str[size - 1 - i])return false;
+		if (buffer[i] != buffer[size - 1 - i])return false;
 	}
 	return true;
 }
 
+char* RemoveSymbol(char str[], char symbol)
+{
+	for (int i = 0; str[i]; i++)
+	{
+		while (str[i] == symbol)
+		{
+			for (int j = i; str[j]; j++)str[j] = str[j + 1];
+		}
+	}
+	return str;
+}
 bool is_int_number(char* str)
 {
 	for (int i = 0; str[i]; i++)
@@ -186,23 +201,25 @@ int hex_to_dec(char* str)
 }
 bool isIPaddress(char* str)
 {
-	char num[4];
-	num[3] = { '\0' };
+	char* num;
 	int index = 0;
 	int number;
+	int size = 0;
 	for (int i = 0; i < 4; i++)	//цикл по числам
 	{
 		for (int j = 0; str[j] != '.'&& j < 4;j++) //передача числа в массив
 		{
-			num[j] = str[j];
 			index++;
+			size++;
 		}
+		num = new char[size+1];
+		for (int j = 0; j <= size; j++) num[j] = str[j]; num[size] = '\0';
 		if (!is_int_number(num)) return false;
 		number = atoi(num);
 		if (number > 255) return false;
 		if (str[index++] != '.' && i < 3) return false;
-
-		//for (int j = 0; num[j]; j++)num[j] = '0';
+		delete[] num;
+		size = 0;
 	}
 	return true;
 
