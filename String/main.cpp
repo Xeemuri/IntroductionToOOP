@@ -10,13 +10,14 @@ int StringLength(const char str[]);
 char* ToUpper(char str[]);
 char* ToLower(char str[]);
 void shrink(char str[]); 
-bool is_palindrome(char* str);
+bool is_palindrome(const char* str);
 bool is_int_number(char* str);
 int to_int_number(char* str);
 bool is_bin_number(char* str);
 int bin_to_dec(char* str);
 bool is_hex_number(char* str);
 int hex_to_dec(char* str);
+bool isIPaddress(char* str);
 
 //#define LINES_BASICS_1
 
@@ -30,11 +31,11 @@ int main()
 	return 0;
 #endif // LINES_BASICS_1
 
-	const int SIZE = 20;
-	char str[SIZE] = {};
-	cout << "Введите строку: ";
+	const int SIZE = 50;
+	char str[SIZE] = {"1.1.1.1"};
+	//cout << "Введите строку: ";
 	SetConsoleCP(1251);
-	cin.getline(str,SIZE);
+	//cin.getline(str,SIZE);
 	SetConsoleCP(866);
 	cout << str << endl;
 	cout << StringLength(str) << endl;
@@ -43,15 +44,16 @@ int main()
 	cout << ToLower(str) << endl;
 	shrink(str);
 	cout << str << endl;
-	cout << ((is_palindrome(str) == true) ? "Строка - палиндром" : "Строка не палиндром") << endl;
-	cout << is_int_number(str) << endl;
+	cout << "Строка" << ((is_palindrome(str) == true) ? " - палиндром" : " не палиндром") << endl;
+	cout << "Строка" << ((is_int_number(str) == true) ? " - целое число" : " нецелое число") << endl;
 	cout << to_int_number(str) << endl;
 	cout << endl;
-	cout << is_bin_number(str)<<endl;
+	cout << "Строка" << ((is_bin_number(str) == true) ? " - двоичное число" : " недвоичное число") << endl;
 	cout << bin_to_dec(str) << endl;
 	cout << endl;
-	cout << is_hex_number(str)<<endl;
+	cout << "Строка" << ((is_hex_number(str) == true) ? " - шестнадцатеричное число" : " нешестнадцатеричное число") << endl;
 	cout << hex_to_dec(str) << endl;
+	cout << isIPaddress(str);
 }
 
 
@@ -99,20 +101,23 @@ void shrink(char str[])
 	str[j] = '\0';
 }
 
-bool is_palindrome(char* str)
+bool is_palindrome(const char* str)
 {
-	
-	int len = strlen(str);
-	for (int i = 0; i < len / 2; i++)
+	/*toLower(str);*/
+	int size = strlen(str);
+	char* buffer = new char[size + 1] {};
+	strcpy(buffer, str);
+	//strcpy(dst,src) //Эта функция копирует содержимое строки 'src' (Source) в строку 'dst' (Destination)
+	for (int i = 0; i < size; i++)
 	{
-		if (str[i] != str[len - 1 - i]) return false;
+		if (str[i] != str[size - 1 - i])return false;
 	}
 	return true;
 }
 
 bool is_int_number(char* str)
 {
-	for (int i = 0; i < strlen(str); i++)
+	for (int i = 0; str[i]; i++)
 	{
 		if ((int)str[i] < '0' || (int)str[i] > '9') return false;
 	}
@@ -155,6 +160,7 @@ bool is_hex_number(char* str)
 }
 int hex_to_dec(char* str)
 {
+	if(!is_hex_number(str)) return 0;
 	int result = 0, power = 0;
 	for (int i = strlen(str) - 1; i >= 0; i--)
 	{
@@ -177,4 +183,29 @@ int hex_to_dec(char* str)
 		
 	}
 	return result;
+}
+bool isIPaddress(char* str)
+{
+	char num[4];
+	num[3] = { '\0' };
+	int index = 0;
+	int number;
+	for (int i = 0; i < 4; i++)	//цикл по числам
+	{
+		for (int j = 0; str[j] != '.'&& j < 4;j++) //передача числа в массив
+		{
+			num[j] = str[j];
+			index++;
+		}
+		if (!is_int_number(num)) return false;
+		number = atoi(num);
+		if (number > 255) return false;
+		if (str[index++] != '.' && i < 3) return false;
+
+		//for (int j = 0; num[j]; j++)num[j] = '0';
+	}
+	return true;
+
+
+
 }
