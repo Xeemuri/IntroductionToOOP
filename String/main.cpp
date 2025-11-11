@@ -19,6 +19,7 @@ int bin_to_dec(char* str);
 bool is_hex_number(char* str);
 int hex_to_dec(char* str);
 bool isIPaddress(char* str);
+bool isMACaddress(char* str);
 
 //#define LINES_BASICS_1
 
@@ -33,7 +34,7 @@ int main()
 #endif // LINES_BASICS_1
 
 	const int SIZE = 50;
-	char str[SIZE] = {"Аргентина манит негра"};
+	char str[SIZE] = {"00-50-B6-5B-CA-6AF"};
 	//cout << "Введите строку: ";
 	SetConsoleCP(1251);
 	//cin.getline(str,SIZE);
@@ -45,16 +46,17 @@ int main()
 	cout << ToLower(str) << endl;
 	shrink(str);
 	cout << str << endl;
-	cout << "Строка" << ((is_palindrome(str) == true) ? " - палиндром" : " не палиндром") << endl;
-	cout << "Строка" << ((is_int_number(str) == true) ? " - целое число" : " нецелое число") << endl;
+	cout << "Строка" << ((is_palindrome(str)) ? " - палиндром" : " не палиндром") << endl;
+	cout << "Строка" << ((is_int_number(str)) ? " - целое число" : " нецелое число") << endl;
 	cout << to_int_number(str) << endl;
 	cout << endl;
-	cout << "Строка" << ((is_bin_number(str) == true) ? " - двоичное число" : " недвоичное число") << endl;
+	cout << "Строка" << ((is_bin_number(str)) ? " - двоичное число" : " не двоичное число") << endl;
 	cout << bin_to_dec(str) << endl;
 	cout << endl;
-	cout << "Строка" << ((is_hex_number(str) == true) ? " - шестнадцатеричное число" : " нешестнадцатеричное число") << endl;
+	cout << "Строка" << ((is_hex_number(str)) ? " - шестнадцатеричное число" : " не шестнадцатеричное число") << endl;
 	cout << hex_to_dec(str) << endl;
-	cout << isIPaddress(str);
+	cout << "Строка" << ((isIPaddress(str)) ? " - IP адрес" : " не IP адрес") << endl;
+	cout << "Строка" << ((isMACaddress(str)) ? " - " : " не ") << "MAC адрес" << endl;
 }
 
 
@@ -114,8 +116,13 @@ bool is_palindrome(const char* str)
 	size = strlen(buffer);
 	for (int i = 0; i < size/2; i++)
 	{
-		if (buffer[i] != buffer[size - 1 - i])return false;
+		if (buffer[i] != buffer[size - 1 - i])
+		{
+			delete[] buffer;
+			return false;
+		}
 	}
+	delete[] buffer;
 	return true;
 }
 
@@ -147,35 +154,57 @@ bool is_bin_number(char* str)
 {
 	for (int i = 0; str[i]; i++)
 	{
-		if (str[i] != '0' && str[i] != '1') return false;
+		if (str[i] != '0' && str[i] != '1' && str[i] != ' ') return false;
 	}
 	return true;
 }
 int bin_to_dec(char* str)
 {
-	if (is_bin_number(str) == false)return 0;
-
+	/*if (is_bin_number(str) == false)return 0;
 
 	int result = 0, pow_of_two = 0;
 	for (int i = strlen(str)-1; i>=0; i--)
 	{
 		result += int(str[i] - '0') * pow(2, pow_of_two++);
 	}
-	return result;
+	return result;*/
+
+	int decimal = 0;
+	int weight = 1;		//Весовой коэффициент разряда
+	int length = strlen(str);
+	for (int i = length - 1; i >= 0; i--)
+	{
+		if (str[i] == ' ')continue;
+		decimal += (str[i] - '0') * weight;
+		weight *= 2;
+	}
+	return decimal;
 }
 
 bool is_hex_number(char* str)
 {
-	ToUpper(str);
+	/*ToUpper(str);
 	for (int i = 0; str[i]; i++)
 	{
 		if ((str[i] < 'A' || str[i] >'F') && (str[i] < '0' || str[i] >'9')) return false;
+	}
+	return true;*/
+
+	bool prefix = false;
+	if (str[0] == '0' && str[1] == 'x')prefix = true;
+	for (int i = prefix ? 2 : 0; str[i]; i++)
+	{
+		if (
+			!(str[i] >= '0' && str[i] <= '9') &&
+			!(str[i] >= 'A' && str[i] <= 'F') &&
+			!(str[i] >= 'a' && str[i] <= 'f')
+			) return false;
 	}
 	return true;
 }
 int hex_to_dec(char* str)
 {
-	if(!is_hex_number(str)) return 0;
+	/*if(!is_hex_number(str)) return 0;
 	int result = 0, power = 0;
 	for (int i = strlen(str) - 1; i >= 0; i--)
 	{
@@ -197,7 +226,22 @@ int hex_to_dec(char* str)
 		}
 		
 	}
-	return result;
+	return result;*/
+	int decimal = 0;
+	int weight = 1;
+	int length = strlen(str);
+	bool prefix = false;
+	if (str[0] == '0' && str[1] == 'x')prefix = true;
+	for (int i = length - 1; i >= (prefix ? 2 : 0); i--)
+	{
+		int digit = 0;
+		if (str[i] >= '0' && str[i] <= '9')digit += str[i] - 48;
+		if (str[i] >= 'A' && str[i] <= 'F')digit += str[i] - 55;
+		if (str[i] >= 'a' && str[i] <= 'f')digit += str[i] - 87;
+		decimal += digit * weight;
+		weight *= 16;
+	}
+	return decimal;
 }
 bool isIPaddress(char* str)
 {
@@ -205,15 +249,19 @@ bool isIPaddress(char* str)
 	int index = 0;
 	int number;
 	int size = 0;
+	int j = 0;
 	for (int i = 0; i < 4; i++)	//цикл по числам
 	{
-		for (int j = 0; str[j] != '.'&& j < 4;j++) //передача числа в массив
+		for (index; str[index] != '.'&& size < 4;index++) //передача числа в массив
 		{
-			index++;
 			size++;
 		}
 		num = new char[size+1];
-		for (int j = 0; j <= size; j++) num[j] = str[j]; num[size] = '\0';
+		for (index -= size, j = 0; j < size; index++, j++)
+		{
+			num[j] = str[index];
+		}
+		num[size] = '\0';
 		if (!is_int_number(num)) return false;
 		number = atoi(num);
 		if (number > 255) return false;
@@ -221,8 +269,28 @@ bool isIPaddress(char* str)
 		delete[] num;
 		size = 0;
 	}
+	if (str[index]) return false;
 	return true;
-
-
-
+}
+bool isMACaddress(char* str)
+{
+	if(str[17]) return false;
+	char* num;
+	int index = 0;
+	int number;
+	int size = 2;
+	for (int i = 0; i < 6; i++)	//цикл по числам
+	{
+		num = new char[size + 1];
+		for (int j = 0; j < size; index++, j++)
+		{
+			num[j] = str[index];
+		}
+		num[size] = '\0';
+		if (!is_hex_number(num)) return false;
+		if (str[index++] != '-' && i < 5) return false;
+		delete[] num;
+	}
+	if (str[index]) return false;
+	return true;
 }
