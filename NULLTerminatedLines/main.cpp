@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 #include <iostream>
 #include <cmath>
@@ -19,9 +20,10 @@ int bin_to_dec(char* str);
 bool is_hex_number(char* str);
 int hex_to_dec(char* str);
 bool isIPaddress(char* str);
-bool isMACaddress(char* str);
+bool isMACaddress(const char* str);
 
 //#define LINES_BASICS_1
+//#define NUMERICS
 
 int main()
 {
@@ -46,6 +48,7 @@ int main()
 	cout << ToLower(str) << endl;
 	shrink(str);
 	cout << str << endl;
+#ifdef NUMERICS
 	cout << "Строка" << ((is_palindrome(str)) ? " - палиндром" : " не палиндром") << endl;
 	cout << "Строка" << ((is_int_number(str)) ? " - целое число" : " нецелое число") << endl;
 	cout << to_int_number(str) << endl;
@@ -55,8 +58,10 @@ int main()
 	cout << endl;
 	cout << "Строка" << ((is_hex_number(str)) ? " - шестнадцатеричное число" : " не шестнадцатеричное число") << endl;
 	cout << hex_to_dec(str) << endl;
+#endif // NUMERICS
 	cout << "Строка" << ((isIPaddress(str)) ? " - IP адрес" : " не IP адрес") << endl;
-	cout << "Строка" << ((isMACaddress(str)) ? " - " : " не ") << "MAC адрес" << endl;
+	cout << "Строка" << ((isMACaddress("4C-77-CB-E4-E8-2C")) ? " - " : " не ") << "MAC адрес" << endl;
+	cout << str;
 }
 
 
@@ -272,25 +277,38 @@ bool isIPaddress(char* str)
 	if (str[index]) return false;
 	return true;
 }
-bool isMACaddress(char* str)
+bool isMACaddress(const char str[])
 {
-	if (str[17]) return false;
-	char* num;
-	int index = 0;
-	int number;
-	int size = 2;
-	for (int i = 0; i < 6; i++)	//цикл по числам
+	//if (strlen(str) != 17 || str[17]) return false;
+	//char* num;
+	//int index = 0;
+	//int number;
+	//int size = 2;
+	//for (int i = 0; i < 6; i++)	//цикл по числам
+	//{
+	//	num = new char[size + 1];
+	//	for (int j = 0; j < size; index++, j++)
+	//	{
+	//		num[j] = str[index];
+	//	}
+	//	num[size] = '\0';
+	//	if (!is_hex_number(num)) return false;
+	//	if (str[index++] != '-' && i < 5) return false;
+	//	delete[] num;
+	//}
+	//if (str[index]) return false;
+	//return true;
+
+	if (strlen(str) != 17) return false;
+	for (int i = 0; str[i]; i++)
 	{
-		num = new char[size + 1];
-		for (int j = 0; j < size; index++, j++)
-		{
-			num[j] = str[index];
-		}
-		num[size] = '\0';
-		if (!is_hex_number(num)) return false;
-		if (str[index++] != '-' && i < 5) return false;
-		delete[] num;
+		if ((i + 1) % 3 == 0 && (str[i] == '-' || str[i] == ':')) continue;
+		else if ((i + 1) % 3 == 0) return false;
+		if(
+			!(str[i] >= '0' && str[i] <= '9') &&
+			!(str[i] >= 'a' && str[i] <= 'f') &&
+			!(str[i] >= 'A' && str[i] <= 'F')
+			)return false;
 	}
-	if (str[index]) return false;
 	return true;
 }

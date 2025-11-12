@@ -34,7 +34,7 @@ int main()
 #endif // LINES_BASICS_1
 
 	const int SIZE = 50;
-	char str[SIZE] = {"00-50-B6-5B-CA-6AF"};
+	char str[SIZE] = {"00-50-B6-5B-CA-6A"};
 	//cout << "Введите строку: ";
 	SetConsoleCP(1251);
 	//cin.getline(str,SIZE);
