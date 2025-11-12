@@ -56,6 +56,7 @@ int main()
 	cout << "Строка" << ((is_hex_number(str)) ? " - шестнадцатеричное число" : " не шестнадцатеричное число") << endl;
 	cout << hex_to_dec(str) << endl;
 	cout << "Строка" << ((isIPaddress(str)) ? " - IP адрес" : " не IP адрес") << endl;
+
 	cout << "Строка" << ((isMACaddress(str)) ? " - " : " не ") << "MAC адрес" << endl;
 }
 

@@ -19,8 +19,8 @@ bool is_bin_number(char* str);
 int bin_to_dec(char* str);
 bool is_hex_number(char* str);
 int hex_to_dec(char* str);
-bool isIPaddress(char* str);
-bool isMACaddress(const char* str);
+bool isIPaddress(const char str[]);
+bool isMACaddress(const char str[]);
 
 //#define LINES_BASICS_1
 //#define NUMERICS
@@ -36,7 +36,7 @@ int main()
 #endif // LINES_BASICS_1
 
 	const int SIZE = 50;
-	char str[SIZE] = { "00-50-B6-5B-CA-6AF" };
+	char str[SIZE] = { "-12.-31.1.1" };
 	//cout << "Введите строку: ";
 	SetConsoleCP(1251);
 	//cin.getline(str,SIZE);
@@ -60,7 +60,7 @@ int main()
 	cout << hex_to_dec(str) << endl;
 #endif // NUMERICS
 	cout << "Строка" << ((isIPaddress(str)) ? " - IP адрес" : " не IP адрес") << endl;
-	cout << "Строка" << ((isMACaddress("4C-77-CB-E4-E8-2C")) ? " - " : " не ") << "MAC адрес" << endl;
+	cout << "Строка" << ((isMACaddress(str)) ? " - " : " не ") << "MAC адрес" << endl;
 	cout << str;
 }
 
@@ -152,8 +152,16 @@ bool is_int_number(char* str)
 }
 int to_int_number(char* str)
 {
-	if (is_int_number(str) == false) return 0;
-	else return atoi(str);
+	/*if (!is_int_number(str)) return 0;
+	else return atoi(str);*/
+	if (!is_int_number(str)) return INT_MIN;
+	int integer = 0;
+	for (int i = 0; str[i]; i++)
+	{
+		integer *= 10;
+		integer += str[i] - '0';
+	}
+	return integer;
 }
 bool is_bin_number(char* str)
 {
@@ -248,34 +256,56 @@ int hex_to_dec(char* str)
 	}
 	return decimal;
 }
-bool isIPaddress(char* str)
+bool isIPaddress(const char str[])
 {
-	char* num;
-	int index = 0;
-	int number;
-	int size = 0;
-	int j = 0;
-	for (int i = 0; i < 4; i++)	//цикл по числам
+	//char* num;
+	//int index = 0;
+	//int number;
+	//int size = 0;
+	//int j = 0;
+	//for (int i = 0; i < 4; i++)	//цикл по числам
+	//{
+	//	for (index; str[index] != '.' && size < 4; index++) //передача числа в массив
+	//	{
+	//		size++;
+	//	}
+	//	num = new char[size + 1];
+	//	for (index -= size, j = 0; j < size; index++, j++)
+	//	{
+	//		num[j] = str[index];
+	//	}
+	//	num[size] = '\0';
+	//	if (!is_int_number(num)) return false;
+	//	number = atoi(num);
+	//	if (number > 255) return false;
+	//	if (str[index++] != '.' && i < 3) return false;
+	//	delete[] num;
+	//	size = 0;
+	//}
+	//if (str[index]) return false;
+	//return true;
+	if (strlen(str) < 7 || strlen(str) > 15)return false;
+	int start = 0;
+	int points_count = 0;
+	for (int i = 0; str[i]; i++)
 	{
-		for (index; str[index] != '.' && size < 4; index++) //передача числа в массив
+		if (str[i] == '.')
 		{
-			size++;
+			if (i - start > 3)return false;
+			char sz_byte[4] = {};	//sz_ - string zero (NTL)
+			unsigned int i_byte = 0;			//i_ - int
+			int k = 0;
+			for (int j = start; j < i; j++)
+			{
+				sz_byte[k++] = str[j];
+			}
+			i_byte = to_int_number(sz_byte);
+			if (i_byte > 255) return false;
+			start = i+1;
+			points_count++;
 		}
-		num = new char[size + 1];
-		for (index -= size, j = 0; j < size; index++, j++)
-		{
-			num[j] = str[index];
-		}
-		num[size] = '\0';
-		if (!is_int_number(num)) return false;
-		number = atoi(num);
-		if (number > 255) return false;
-		if (str[index++] != '.' && i < 3) return false;
-		delete[] num;
-		size = 0;
 	}
-	if (str[index]) return false;
-	return true;
+	return points_count == 3 ? true : false;
 }
 bool isMACaddress(const char str[])
 {
@@ -304,11 +334,12 @@ bool isMACaddress(const char str[])
 	{
 		if ((i + 1) % 3 == 0 && (str[i] == '-' || str[i] == ':')) continue;
 		else if ((i + 1) % 3 == 0) return false;
-		if(
+		/*if(
 			!(str[i] >= '0' && str[i] <= '9') &&
 			!(str[i] >= 'a' && str[i] <= 'f') &&
 			!(str[i] >= 'A' && str[i] <= 'F')
-			)return false;
+			)return false;*/
+		if (!isxdigit(str[i]))return false;
 	}
 	return true;
 }
