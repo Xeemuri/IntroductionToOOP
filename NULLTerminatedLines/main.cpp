@@ -21,6 +21,7 @@ bool is_hex_number(char* str);
 int hex_to_dec(char* str);
 bool isIPaddress(const char str[]);
 bool isMACaddress(const char str[]);
+bool isIPaddressTok(const char str[]);
 
 //#define LINES_BASICS_1
 //#define NUMERICS
@@ -36,7 +37,7 @@ int main()
 #endif // LINES_BASICS_1
 
 	const int SIZE = 50;
-	char str[SIZE] = { "-12.-31.1.1" };
+	char str[SIZE] = { "1234" };
 	//cout << "Введите строку: ";
 	SetConsoleCP(1251);
 	//cin.getline(str,SIZE);
@@ -61,6 +62,7 @@ int main()
 #endif // NUMERICS
 	cout << "Строка" << ((isIPaddress(str)) ? " - IP адрес" : " не IP адрес") << endl;
 	cout << "Строка" << ((isMACaddress(str)) ? " - " : " не ") << "MAC адрес" << endl;
+	cout << "Строка" << ((isIPaddressTok(str)) ? " - IP адрес" : " не IP адрес") << endl;
 	cout << str;
 }
 
@@ -306,6 +308,26 @@ bool isIPaddress(const char str[])
 		}
 	}
 	return points_count == 3 ? true : false;
+}
+
+bool isIPaddressTok(const char str[])
+{
+	if (strlen(str) < 7 || strlen(str) > 15)return false;
+	char* buffer = new char[strlen(str)+1];
+	for (int i = 0; i <= strlen(str); i++) buffer[i] = str[i];
+
+	int number;
+	char* pch = strtok(buffer, ".");
+	for (int i = 0; pch!= NULL; i++)
+	{
+		if (i > 3) return false;
+		if (strlen(pch) > 3) return false;
+		if (!is_int_number(pch)) return false;
+		number = to_int_number(pch);
+		if (number > 255 || number < 0) return false;
+		pch = strtok(NULL, ".");
+	}
+	return true;
 }
 bool isMACaddress(const char str[])
 {
