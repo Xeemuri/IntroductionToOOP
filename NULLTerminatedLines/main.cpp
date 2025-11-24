@@ -37,7 +37,7 @@ int main()
 #endif // LINES_BASICS_1
 
 	const int SIZE = 50;
-	char str[SIZE] = { "1234" };
+	char str[SIZE] = { "1.2.3.4" };
 	//cout << "¬ведите строку: ";
 	SetConsoleCP(1251);
 	//cin.getline(str,SIZE);
@@ -312,20 +312,39 @@ bool isIPaddress(const char str[])
 
 bool isIPaddressTok(const char str[])
 {
-	if (strlen(str) < 7 || strlen(str) > 15)return false;
+	/*if (strlen(str) < 7 || strlen(str) > 15)return false;
 	char* buffer = new char[strlen(str)+1];
-	for (int i = 0; i <= strlen(str); i++) buffer[i] = str[i];
+	strcpy(buffer, str);
 
+	int cnt = 0;
 	int number;
 	char* pch = strtok(buffer, ".");
 	for (int i = 0; pch!= NULL; i++)
 	{
-		if (i > 3) return false;
-		if (strlen(pch) > 3) return false;
-		if (!is_int_number(pch)) return false;
-		number = to_int_number(pch);
-		if (number > 255 || number < 0) return false;
+		if (i > 3) break;
+		if (strlen(pch) > 3) break;
+		if (!is_int_number(pch)) break;
+		number = std::atoi(pch);
+		if (number > 255 || number < 0) break;
 		pch = strtok(NULL, ".");
+		cnt++;
+	}
+	delete[] buffer;
+	if (cnt != 4) return false;
+	else return true;*/
+
+	int size = strlen(str);
+	if (size < 7 || size > 15) return false;
+	char* buffer = new char[size + 1];
+	strcpy(buffer, str);
+	int n = 0;
+	unsigned int bytes[4] = {};
+	for (char* pch = strtok(buffer, "."); pch; pch = strtok(NULL, "."))
+		bytes[n++] = std::atoi(pch);
+	if (n < 4)return false;
+	for (int i = 0; i < n; i++)
+	{
+		if (bytes[i] > 255)return false;
 	}
 	return true;
 }
