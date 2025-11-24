@@ -42,11 +42,25 @@ public:
 		this->size = obj.size;
 		this->str = new char[size] {};
 		for (int i = 0; i < size; i++) this->str[i] = obj.str[i];
+		cout << "CopyConstructor: \t" << this << endl;
+	}
+	String(String&& other)
+	{
+		//String&& other - r-value reference
+		//Shallow copy - поверхностное копирование
+		this->size = other.size;
+		this->str = other.str;
+
+		//Обязательно нужно обнулить копируемый объектЖ
+		other.size = 0;
+		other.str = nullptr;
+		//это предотвращает удаление динамической памяти деструктором
+		cout << "MoveConstructor: \t" << this << endl;
 	}
 	~String()
 	{
 		delete[] str;
-		cout << "Destructor: \t" << this << endl;
+		cout << "Destructor: \t\t" << this << endl;
 	}
 
 	//		Methods:
@@ -110,9 +124,12 @@ int main()
 	return 0;
 #endif // BASE_CHECK
 #ifdef OPERATORS_CHECK
-	String str1 = "Hello ";
-	String str2 = "World!";
+	String str1 = "Hello";
+	String str2 = "World";
+
+	cout << delimeter << endl;
 	String str3 = str1 + str2;
+	cout << delimeter << endl;
 	cout << str3 << endl;
 #endif // OPERATORS_CHECK
 
