@@ -6,91 +6,116 @@ using namespace std;
 #define delimeter "\n--------------------------------------------------------------\n"
 //#define BASE_CHECK
 #define OPERATORS_CHECK
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////				Class declaration							//////////////
+
 class String
 {
 	int size;	//размер строки в байтах
 	char* str;
 public:
-	const char* get_str() const
-	{
-		return str;
-	}
-	char* get_str()
-	{
-		return str;
-	}
-	int get_size() const
-	{
-		return size;
-	}
+	int get_size() const;
+	const char* get_str() const;
+	char* get_str();
 
-	explicit String(int size = 80) :
-		str(new char[size] {}),
-		size(size)
-	{
-		//this->size = size;
-		//this->str = new char[size] {};
-		cout << "DefConstructor: \t" << this << endl;
-	}
-	String(const char str[]) :String(strlen(str) + 1)
-	{
-		/*this->size = strlen(str)+1;
-		this->str = new char[size] {};*/
-		for (int i = 0; str[i]; i++)this->str[i] = str[i];
-		cout << "Constructor: \t\t" << this << endl;
-	}
-	String(const String& obj): String(obj.str)
-	{
-		/*this->size = obj.size;
-		this->str = new char[size] {};*/
-		//for (int i = 0; i < size; i++) this->str[i] = obj.str[i];
-		cout << "CopyConstructor: \t" << this << endl;
-	}
-	String(String&& other)
-	{
-		//String&& other - r-value reference
-		//Shallow copy - поверхностное копирование
-		this->size = other.size;
-		this->str = other.str;
-
-		//Обязательно нужно обнулить копируемый объектЖ
-		other.size = 0;
-		other.str = nullptr;
-		//это предотвращает удаление динамической памяти деструктором
-		cout << "MoveConstructor: \t" << this << endl;
-	}
-	~String()
-	{
-		delete[] str;
-		cout << "Destructor: \t\t" << this << endl;
-	}
+	explicit String(int size = 80);
+	String(const char str[]);
+	String(const String& obj);
+	String(String&& other);
+	~String();
 
 	//		Methods:
-	void print() const
-	{
-		cout << "Size:\t" << size << endl;
-		cout << "Str:\t" << str << endl;
-	}
+	void print() const;
 
-	String& operator= (const String& other)
-	{
-		if (this == &other) return *this;
-		delete[] this->str;
-		this->size = other.size;
-		this->str = new char[size];
-		for (int i = 0; i < size; i++) this->str[i] = other.str[i];
-		cout << "CopyAssignment: " << this << endl;
-		return *this;
-	}
-	char operator[](int i) const
-	{
-		return str[i];
-	}
-	char& operator[](int i)
-	{
-		return str[i];
-	}
+	String& operator= (const String& other);
+	char operator[](int i) const;
+	char& operator[](int i);
 };
+//////////////				Class declaration end						//////////////
+//////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////				Class definition							//////////////
+int String::get_size() const
+{
+	return size;
+}
+const char* String::get_str() const
+{
+	return str;
+}
+char* String::get_str()
+{
+	return str;
+}
+
+String::String(int size) :
+	str(new char[size] {}),
+	size(size)
+{
+	//this->size = size;
+	//this->str = new char[size] {};
+	cout << "DefConstructor: \t" << this << endl;
+}
+String::String(const char str[]) :String(strlen(str) + 1)
+{
+	/*this->size = strlen(str)+1;
+	this->str = new char[size] {};*/
+	for (int i = 0; str[i]; i++)this->str[i] = str[i];
+	cout << "Constructor: \t\t" << this << endl;
+}
+String::String(const String& obj) : String(obj.str)
+{
+	/*this->size = obj.size;
+	this->str = new char[size] {};*/
+	//for (int i = 0; i < size; i++) this->str[i] = obj.str[i];
+	cout << "CopyConstructor: \t" << this << endl;
+}
+String::String(String&& other)
+{
+	//String&& other - r-value reference
+	//Shallow copy - поверхностное копирование
+	this->size = other.size;
+	this->str = other.str;
+
+	//Обязательно нужно обнулить копируемый объектЖ
+	other.size = 0;
+	other.str = nullptr;
+	//это предотвращает удаление динамической памяти деструктором
+	cout << "MoveConstructor: \t" << this << endl;
+}
+String::~String()
+{
+	delete[] str;
+	cout << "Destructor: \t\t" << this << endl;
+}
+
+//		Methods:
+void String::print() const
+{
+	cout << "Size:\t" << size << endl;
+	cout << "Str:\t" << str << endl;
+}
+
+String& String::operator= (const String& other)
+{
+	if (this == &other) return *this;
+	delete[] this->str;
+	this->size = other.size;
+	this->str = new char[size];
+	for (int i = 0; i < size; i++) this->str[i] = other.str[i];
+	cout << "CopyAssignment: " << this << endl;
+	return *this;
+}
+char String::operator[](int i) const
+{
+	return str[i];
+}
+char& String::operator[](int i)
+{
+	return str[i];
+}
 
 String operator+ (const String& left, const String& right)
 {
@@ -109,7 +134,8 @@ ostream& operator<<(ostream& os, const String& obj)
 {
 	return os << obj.get_str();
 }
-
+//////////////				Class definition end						//////////////
+//////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
 #ifdef BASE_CHECK
