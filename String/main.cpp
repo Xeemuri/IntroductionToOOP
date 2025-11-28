@@ -24,24 +24,26 @@ public:
 		return size;
 	}
 
-	explicit String(int size = 80)
+	explicit String(int size = 80) :
+		str(new char[size] {}),
+		size(size)
 	{
-		this->size = size;
-		this->str = new char[size] {};
+		//this->size = size;
+		//this->str = new char[size] {};
 		cout << "DefConstructor: \t" << this << endl;
 	}
-	String(const char str[])
+	String(const char str[]) :String(strlen(str) + 1)
 	{
-		this->size = strlen(str)+1;
-		this->str = new char[size] {};
+		/*this->size = strlen(str)+1;
+		this->str = new char[size] {};*/
 		for (int i = 0; str[i]; i++)this->str[i] = str[i];
-		cout << "Constructor: \t" << this << endl;
+		cout << "Constructor: \t\t" << this << endl;
 	}
-	String(const String& obj)
+	String(const String& obj): String(obj.str)
 	{
-		this->size = obj.size;
-		this->str = new char[size] {};
-		for (int i = 0; i < size; i++) this->str[i] = obj.str[i];
+		/*this->size = obj.size;
+		this->str = new char[size] {};*/
+		//for (int i = 0; i < size; i++) this->str[i] = obj.str[i];
 		cout << "CopyConstructor: \t" << this << endl;
 	}
 	String(String&& other)
@@ -131,6 +133,8 @@ int main()
 	String str3 = str1 + str2;
 	cout << delimeter << endl;
 	cout << str3 << endl;
+	String str4 = str3;
+	str4.print();
 #endif // OPERATORS_CHECK
 
 }
