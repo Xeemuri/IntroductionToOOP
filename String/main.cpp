@@ -80,6 +80,20 @@ public:
 		cout << "CopyAssignment: " << this << endl;
 		return *this;
 	}
+	String& operator=(String&& other)
+	{
+		if (this == &other)return *this;
+		delete[] this->str;
+
+		this->size = other.size;
+		this->str = other.str;
+
+		other.size = 0;
+		other.str = nullptr;
+
+		cout << "MoveAssignment:\t" << this << endl;
+		return *this;
+	}
 	char operator[](int i) const
 	{
 		return str[i];
